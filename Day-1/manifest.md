@@ -46,3 +46,5 @@ spec:
       image: nginx:1.21
       ports:
         - containerPort: 80
+
+kubectl apply --dry-run=client -f yourfile.yaml
