@@ -1,62 +1,127 @@
-# Introduction to Kubernetes
+# Kubernetes Architecture
 
-## 1. What is Kubernetes?
-Kubernetes (often abbreviated as **K8s**) is an **open-source container orchestration platform** designed to automate the deployment, scaling, and management of containerized applications.  
-It was originally developed by Google and is now maintained by the **Cloud Native Computing Foundation (CNCF)**.  
+## 1. Introduction
 
-At its core, Kubernetes provides a framework to run distributed systems reliably, handling failures, scaling workloads, and managing service discovery seamlessly.
+### What is Kubernetes?
+Kubernetes (often abbreviated as **K8s**) is an open-source container orchestration platform that automates the deployment, scaling, and management of containerized applications.
 
----
+### Why use Kubernetes?
+Kubernetes simplifies application management in dynamic environments, allowing teams to run applications reliably across multiple environments—on-premises, cloud, or hybrid.
 
-## 2. Why Kubernetes?
-Before Kubernetes, running containers at scale was challenging — managing networking, scaling, and failover often required significant manual effort or custom scripts.
-
-Kubernetes solves these problems by:
-- **Automating deployments** so you can focus on code, not infrastructure.
-- **Scaling applications automatically** based on resource usage or demand.
-- **Ensuring high availability** with self-healing capabilities.
-- **Abstracting infrastructure** so workloads can run anywhere — on-premises, in the cloud, or hybrid environments.
-
-By adopting Kubernetes, organizations can speed up development cycles, improve resource utilization, and achieve consistent application management across environments.
+### Key benefits & use cases
+- **Scalability** – Automatically scale applications up or down.
+- **High availability** – Minimize downtime with self-healing mechanisms.
+- **Portability** – Run workloads across different cloud providers or on-premises.
+- **Efficient resource utilization** – Schedule workloads effectively.
 
 ---
 
-## 3. Key Features
-- **Automatic Scaling** – Scale applications up or down based on demand (Horizontal Pod Autoscaler).
-- **Self-Healing** – Automatically restarts failed containers, replaces Pods, and reschedules workloads on healthy nodes.
-- **Load Balancing & Service Discovery** – Distributes traffic evenly and provides stable endpoints for services.
-- **Rolling Updates & Rollbacks** – Update applications with zero downtime and revert changes if needed.
-- **Secret & Configuration Management** – Manage sensitive data and application configs securely.
-- **Storage Orchestration** – Automatically mount storage systems like EBS, NFS, or cloud-native volumes.
+## 2. High-Level Architecture
+
+Kubernetes architecture is split into two major parts:
+
+- **Control Plane** – Manages the cluster, makes global decisions, and monitors cluster state.
+- **Worker Nodes** – Run the workloads (containers) as scheduled by the control plane.
+
+### Cluster Components Overview Diagram
+![Kubernetes Architecture](./k8s-arch.png)
 
 ---
 
-## 4. How Kubernetes Works (High-Level)
-Kubernetes uses a **cluster** of machines (nodes) and separates responsibilities between the **control plane** and **worker nodes**:
+## 3. Control Plane Components
 
-- **Control Plane**  
-  - **API Server** – Central communication hub for all cluster operations.  
-  - **Scheduler** – Assigns Pods to nodes based on resource availability.  
-  - **Controller Manager** – Monitors and enforces desired cluster state.  
-  - **etcd** – Key-value store holding cluster configuration and state.
+### 3.1 kube-apiserver
+- Acts as the **front door** to the cluster.
+- Handles REST requests (via `kubectl`, client libraries, or API calls).
+- Validates and processes requests, then updates the cluster state in `etcd`.
 
-- **Worker Nodes**  
-  - **Kubelet** – Agent that ensures containers are running in Pods as expected.  
-  - **Kube-proxy** – Handles network traffic routing to Pods.  
-  - **Container Runtime** – Runs containers (e.g., containerd, CRI-O).
+### 3.2 etcd
+- Distributed **key-value store** for cluster data.
+- Stores **desired state** and configuration.
+- **Backup is critical** to recover from data loss or corruption.
 
-- **Pods** – The smallest deployable unit in Kubernetes, encapsulating one or more containers with shared networking and storage.
+### 3.3 kube-scheduler
+- Decides where pods will run.
+- Considers **resource requirements**, **taints/tolerations**, **node affinity**, and **workload spread**.
+
+### 3.4 kube-controller-manager
+- Runs various **controllers**:
+  - **Node Controller** – Monitors node health.
+  - **Replication Controller** – Ensures desired pod counts.
+  - **Endpoints Controller** – Manages service endpoints.
+
+### 3.5 cloud-controller-manager
+- Integrates Kubernetes with cloud provider APIs.
+- Manages:
+  - Load balancers
+  - Persistent storage volumes
+  - Networking routes
 
 ---
 
-## 5. Kubernetes in the Cloud
-While Kubernetes can be installed on-premises, many organizations choose **managed Kubernetes services** to reduce operational overhead. Popular options include:
-- **Amazon Elastic Kubernetes Service (EKS)** – Fully managed Kubernetes control plane on AWS.
-- **Google Kubernetes Engine (GKE)** – Managed Kubernetes with deep Google Cloud integration.
-- **Azure Kubernetes Service (AKS)** – Microsoft’s managed Kubernetes solution.
+## 4. Worker Node Components
 
-**Benefits of managed services:**
-- Automatic control plane upgrades and patching.
-- Built-in integration with cloud provider networking, storage, and security.
-- Reduced operational burden, allowing teams to focus on workloads.
+### 4.1 kubelet
+- Communicates with the API server.
+- Ensures containers described in PodSpecs are running.
+- Handles **Pod lifecycle management**.
 
+### 4.2 kube-proxy
+- Manages networking for services.
+- Implements **iptables** or **IPVS** rules for routing traffic to pods.
+
+### 4.3 Container Runtime
+- Executes containers based on Kubernetes instructions.
+- Must be **CRI-compatible**.
+- Examples: **containerd**, **CRI-O**, **Docker** (deprecated in newer Kubernetes versions).
+
+---
+
+## 5. Add-ons
+- **CoreDNS** – DNS for service discovery.
+- **Ingress Controllers** – HTTP/HTTPS routing into the cluster.
+- **Metrics Server** – Resource usage data for autoscaling.
+- **CNI Plugins** – Networking providers (Calico, Flannel, Cilium).
+
+---
+
+## 6. Networking in Kubernetes
+- **Pod-to-pod communication** – Flat network space.
+- **Service Types**:
+  - `ClusterIP` – Internal cluster access.
+  - `NodePort` – External access via node IP.
+  - `LoadBalancer` – External access via cloud load balancers.
+- **Network Policies** – Restrict or allow communication between pods.
+
+---
+
+## 7. Storage in Kubernetes
+- **Volumes** – Ephemeral or persistent.
+- **Persistent Volumes (PV)** – Cluster-level storage resources.
+- **StorageClasses** – Enable **dynamic provisioning** from storage providers.
+
+---
+
+## 8. Security Considerations
+- **RBAC** – Role-based access control for API resources.
+- **Service Accounts & Secrets** – Secure authentication and configuration storage.
+- **Network Policies** – Enforce communication rules between pods.
+- **Pod Security Standards (PSS)** – Define security requirements for workloads.
+
+---
+
+## 9. Cluster Lifecycle
+- **Bootstrapping** – Initial setup of control plane and worker nodes.
+- **Scaling** – Add/remove nodes or scale workloads.
+- **Upgrades & Maintenance** – Apply security patches and new features without downtime.
+
+---
+
+## 10. Conclusion
+Kubernetes provides a **scalable, resilient, and flexible** platform for running containerized applications.  
+It continues to evolve, with trends like:
+- **Serverless Kubernetes**
+- **Edge computing integration**
+- **AI/ML workload optimization**
+
+---
