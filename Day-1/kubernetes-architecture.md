@@ -60,4 +60,3 @@ While Kubernetes can be installed on-premises, many organizations choose **manag
 - Built-in integration with cloud provider networking, storage, and security.
 - Reduced operational burden, allowing teams to focus on workloads.
 
----
