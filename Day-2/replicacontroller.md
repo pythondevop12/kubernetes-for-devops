@@ -31,8 +31,155 @@ ReplicationController automated this by:
 ---
 
 ## 4. Components of a ReplicationController
+# Kubernetes ReplicationController
 
-### 4.1 apiVersion
-Specifies the Kubernetes API version.
+---
+
+## **4.2 kind**
+Defines the resource type.
+
+```yaml
+kind: ReplicationController
+```
+
+---
+
+## **4.3 metadata**
+Contains information about the RC.
+
+```yaml
+metadata:
+  name: nginx-rc
+  labels:
+    app: nginx
+```
+
+---
+
+## **4.4 spec**
+The desired state configuration.
+
+### **replicas**
+Number of Pods to maintain.
+
+```yaml
+replicas: 3
+```
+
+### **selector**
+Label selector to identify which Pods are managed.
+
+```yaml
+selector:
+  app: nginx
+```
+
+### **template**
+Pod template describing Pods to be created.
+
+```yaml
+template:
+  metadata:
+    labels:
+      app: nginx
+  spec:
+    containers:
+    - name: nginx
+      image: nginx:1.26
+      ports:
+      - containerPort: 80
+```
+
+---
+
+## **5. Example: ReplicationController YAML**
+
 ```yaml
 apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: nginx-rc
+  labels:
+    app: nginx
+spec:
+  replicas: 3
+  selector:
+    app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.26
+        ports:
+        - containerPort: 80
+```
+
+---
+
+## **6. How It Works**
+1. You create a ReplicationController.
+2. Kubernetes checks how many Pods with the given selector exist.
+3. If there are fewer Pods than replicas, new Pods are created.
+4. If there are more Pods, the excess ones are terminated.
+5. If a Pod is deleted or crashes, it is recreated automatically.
+
+---
+
+## **7. Scaling a ReplicationController**
+You can scale in two ways:
+
+**Option 1:** Edit YAML  
+```bash
+kubectl edit rc nginx-rc
+# Change replicas: 5
+```
+
+**Option 2:** Command line  
+```bash
+kubectl scale rc nginx-rc --replicas=5
+```
+
+---
+
+## **8. Common Commands**
+
+**Create a ReplicationController**
+```bash
+kubectl apply -f nginx-rc.yaml
+```
+
+**View ReplicationControllers**
+```bash
+kubectl get rc
+```
+
+**Describe a ReplicationController**
+```bash
+kubectl describe rc nginx-rc
+```
+
+**Delete a ReplicationController (and Pods)**
+```bash
+kubectl delete rc nginx-rc
+```
+
+---
+
+## **9. Limitations of ReplicationController**
+- Equality-based selectors only — cannot use advanced set-based selectors.
+- No built-in rolling updates — must delete and recreate Pods for updates.
+- Deprecated in favor of **ReplicaSet**.
+
+---
+
+## **10. Best Practices**
+- Always label Pods with clear, unique labels.
+- Avoid using ReplicationController in new deployments — prefer **Deployments** (which manage ReplicaSets).
+- Pin image versions (avoid `latest` tag).
+- Use readiness probes to prevent traffic from going to unhealthy Pods.
+- Keep your replica count aligned with expected load.
+
+---
