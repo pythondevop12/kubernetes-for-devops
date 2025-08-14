@@ -16,6 +16,6 @@ spec:
     spec:
       containers:
         - name: python-dep
-          image: 247523262347.dkr.ecr.us-east-1.amazonaws.com/k8s-deployment:latest
+          image: <image_uri>
           ports:
             - containerPort: 8000
