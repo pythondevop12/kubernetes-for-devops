@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: python-dep
+  labels:
+    app: python-dep
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: python-dep
+  template:
+    metadata:
+      labels:
+        app: python-dep
+    spec:
+      containers:
+        - name: python-dep
+          image: 247523262347.dkr.ecr.us-east-1.amazonaws.com/k8s-deployment:latest
+          ports:
+            - containerPort: 8000
