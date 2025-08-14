@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Frontend</title>
+</head>
+<body>
+  <h1>Frontend Page</h1>
+  <p>Backend says: <span id="backend-msg"></span></p>
+
+  <script>
+    fetch('http://backend-svc:5000')
+      .then(res => res.text())
+      .then(data => document.getElementById('backend-msg').innerText = data)
+      .catch(err => document.getElementById('backend-msg').innerText = 'Error');
+  </script>
+</body>
+</html>

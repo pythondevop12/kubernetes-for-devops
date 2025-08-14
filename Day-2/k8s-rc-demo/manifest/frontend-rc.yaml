@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: frontend-rc
+  labels:
+    app: frontend
+spec:
+  replicas: 1
+  selector:
+    app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      containers:
+      - name: frontend
+        image: <image_uri>
+        ports:
+        - containerPort: 80
