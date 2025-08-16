@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-api-svc
+spec:
+  selector:
+    app: backend-api     # Matches Deployment labels
+  ports:
+    - protocol: TCP
+      port: 80          # Service port (internal)
+      targetPort: 8000  # Container port from your Deployment
+  type: NodePort       # Default; can omit

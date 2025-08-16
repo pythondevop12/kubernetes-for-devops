@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment 
+metadata:
+  name: alb-api
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: alb-api
+  template:
+    metadata:
+      labels:
+        app: alb-api
+    spec:
+      containers:
+      - name: alb-api
+        image: <image_here>
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 8000
