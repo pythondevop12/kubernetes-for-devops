@@ -1,7 +1,5 @@
 # Kubernetes Taints/Tolerations vs. Node Affinity
-A practical, copy‑pasteable guide to understand **how** and **when** to use taints/tolerations and node affinity for pod scheduling.
-
-> TL;DR  
+ 
 > - **Taints/Tolerations**: Nodes say “**keep out** unless you tolerate me.” (Node-driven exclusion)  
 > - **Node Affinity**: Pods say “**I prefer/require** nodes with these labels.” (Pod-driven selection)
 
