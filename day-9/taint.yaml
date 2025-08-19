@@ -1,0 +1,13 @@
+apiversion: v1
+kind: Node
+metadata:
+  name: i-027e220f54c38cad4
+spec:
+  taints:
+    - key: dedicated
+      value: backend
+      effect: NoSchedule
+
+
+# kubectl patch node i-027e220f54c38cad4 -p '{"spec":{"taints":[{"key":"dedicated","value":"backend","effect":"NoSchedule"}]}}'
+# kubectl patch node i-0bc1d394510cf81db -p '{"spec":{"taints":[{"key":"dedicated","value":"frontend","effect":"NoSchedule"}]}}'

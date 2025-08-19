@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: test-with-toleration
+spec:
+  tolerations:
+    - key: "dedicated"
+      operator: "Equal"
+      value: "backend"
+      effect: "NoSchedule"
+  containers:
+    - name: nginx
+      image: nginx
