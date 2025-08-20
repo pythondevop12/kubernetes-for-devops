@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: Pod 
+metadata:
+  name: probe-pod
+spec:
+  containers:
+    - name: probe-pod
+      image: 247523262347.dkr.ecr.us-east-1.amazonaws.com/probe:latest
+      ports:
+      - containerPort: 8000
+      livenessProbe:
+          httpGet:
+            path: /hello
+            port: 8000
+          initialDelaySeconds: 5
+          periodSeconds: 10
+      readinessProbe:
+          httpGet:
+            path: /hello
+            port: 8000
+          initialDelaySeconds: 5
+          periodSeconds: 5
+      startupProbe:
+          httpGet:
+            path: /hello
+            port: 8000
+          failureThreshold: 30
+          periodSeconds: 10
